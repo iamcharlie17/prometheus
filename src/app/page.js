@@ -1,11 +1,17 @@
-import React from 'react';
+import CTA from "@/components/homepage/CTA"
+import Features from "@/components/homepage/Features"
+import Hero from "@/components/homepage/Hero"
+import Footer from "@/components/shared/Footer"
+import Navbar from "@/components/shared/Navbar"
 
-const Home = () => {
+export default function HomePage() {
   return (
-    <div className='flex items-center justify-center min-h-screen'>
-      <h1 className="glow-text">PROMETHEUS</h1>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <Hero />
+      <Features />
+      <CTA />
+      <Footer />
     </div>
-  );
-};
-
-export default Home;
+  )
+}

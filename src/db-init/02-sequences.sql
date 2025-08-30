@@ -1,0 +1,23 @@
+-- Drop sequences if they exist
+BEGIN
+   EXECUTE IMMEDIATE 'DROP SEQUENCE users_seq';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -2289 THEN
+         RAISE;
+      END IF;
+END;
+/
+BEGIN
+   EXECUTE IMMEDIATE 'DROP SEQUENCE audit_logs_seq';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -2289 THEN
+         RAISE;
+      END IF;
+END;
+/
+-- Create sequences
+CREATE SEQUENCE users_seq START WITH 1 INCREMENT BY 1 NOCACHE
+/
+CREATE SEQUENCE audit_logs_seq START WITH 1 INCREMENT BY 1 NOCACHE

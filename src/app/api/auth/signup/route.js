@@ -36,11 +36,7 @@ export async function POST(request) {
 
     await executeQuery(insertQuery, [
       name,
-      email,
-      hashedPassword,
-      role || "user",
-    ]);
-
+      
     // 4. Fetch the newly created user to return its details (without the password)
     const newUserResult = await executeQuery(
       `SELECT id, name, email, role FROM users WHERE email = :email`,

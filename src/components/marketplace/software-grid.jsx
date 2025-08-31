@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -8,11 +10,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, DollarSign, ShoppingCart } from "lucide-react";
-import { mockSoftware } from "@/lib/mock-data";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export function SoftwareGrid() {
+  const [softwareList, setSoftwareList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSoftware = async () => {
+      try {
+        const response = await fetch("/api/software");
+        if (!response.ok) {
+          throw new Error("Failed to fetch software");
+        }
+        const data = await response.json();
+        setSoftwareList(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSoftware();
+  }, []);
+
+  if (loading) {
+    return <div>Loading software...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -20,7 +47,7 @@ export function SoftwareGrid() {
         <div>
           <h2 className="text-xl font-semibold">All Software</h2>
           <p className="text-sm text-muted-foreground">
-            {mockSoftware.length} products available
+            {softwareList.length} products available
           </p>
         </div>
 
@@ -34,31 +61,31 @@ export function SoftwareGrid() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockSoftware.map((software) => (
+        {softwareList.map((software) => (
           <Card
-            key={software.id}
+            key={software.ID}
             className="group hover:shadow-lg transition-shadow"
           >
             <CardHeader className="pb-3">
               <div className="flex items-start gap-3">
                 <Image
                   src={
-                    software.iconUrl || "/placeholder.svg?height=40&width=40"
+                    software.ICON_URL || "/placeholder.svg?height=40&width=40"
                   }
-                  alt={software.name}
+                  alt={software.NAME}
                   width={40}
                   height={40}
                   className="rounded-lg"
                 />
                 <div className="flex-1">
-                  <CardTitle className="text-base">{software.name}</CardTitle>
+                  <CardTitle className="text-base">{software.NAME}</CardTitle>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                       <span className="text-xs font-medium">4.8</span>
                     </div>
                     <Badge variant="outline" className="text-xs">
-                      v{software.version}
+                      v{software.VERSION}
                     </Badge>
                   </div>
                 </div>
@@ -66,23 +93,23 @@ export function SoftwareGrid() {
             </CardHeader>
             <CardContent className="space-y-4">
               <CardDescription className="line-clamp-2 text-sm">
-                {software.description}
+                {software.DESCRIPTION}
               </CardDescription>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <DollarSign className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xl font-bold">${software.price}</span>
+                  <span className="text-xl font-bold">${software.PRICE}</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                {/* <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Download className="w-3 h-3" />
                   <span>1.2k</span>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex gap-2">
                 <Button size="sm" className="flex-1" asChild>
-                  <Link href={`/marketplace/software/${software.id}`}>
+                  <Link href={`/marketplace/software/${software.ID}`}>
                     View
                   </Link>
                 </Button>

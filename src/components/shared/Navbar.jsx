@@ -45,10 +45,10 @@ const DeveloperMenu = ({ user, setUser }) => (
             <DropdownMenuSeparator /> */}
             <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
-                <button onClick={() => (
-                    localStorage.removeItem("token"),
-                    setUser(null),
-                )}>Log out</button>
+                <button onClick={() => {
+                    localStorage.removeItem("token");
+                    setUser(null);
+                }}>Log out</button>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

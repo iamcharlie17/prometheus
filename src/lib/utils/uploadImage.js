@@ -1,6 +1,4 @@
 'use client'
-
-
 import axios from "axios";
 
 const key = "50e5f1d5cc97aa1b9e315257fb4dbeb8";

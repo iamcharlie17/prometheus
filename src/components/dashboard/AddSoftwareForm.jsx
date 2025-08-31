@@ -44,20 +44,60 @@ export function AddSoftwareForm() {
                 console.log("Image uploaded successfully:", response);
             } catch (error) {
                 console.error("Error uploading image:", error);
-            }finally{
+            } finally {
                 setLoading(false);
             }
-        }else{
+        } else {
             try {
                 setLoading(true);
-                //upload file
+                if(file) await uploadFile(file);
             } catch (error) {
                 console.error("Error uploading file:", error);
-            }finally{
+            } finally {
                 setLoading(false);
             }
         }
     };
+
+    // Step 1: get signed URL from your API
+    async function getSignedUrl(file) {
+        const res = await fetch("/api/s3-upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                fileName: file.name,
+                fileType: file.type,
+            }),
+        });
+
+        if (!res.ok) throw new Error("Failed to get signed URL");
+
+        return res.json(); // returns { signedUrl, fileUrl }
+    }
+
+    // Step 2: upload file to S3 using the signed URL
+    async function uploadFile(file) {
+        setLoading(true);
+        try {
+            const { signedUrl, fileUrl } = await getSignedUrl(file);
+
+            await fetch(signedUrl, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": file.type,
+                },
+                body: file, // raw file content
+            });
+
+            setSoftwareData((prev) => ({ ...prev, download_url: fileUrl }));
+            alert("File uploaded successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Upload failed");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleSubmit = () => {
         console.log("Submitting software data:", softwareData);
@@ -74,7 +114,7 @@ export function AddSoftwareForm() {
     };
 
     const isStep1Valid = softwareData.name && softwareData.description && softwareData.price && softwareData.logo_url;
-    const isStep2Valid = softwareData.executable;
+    const isStep2Valid = softwareData.download_url;
 
     return (
         <div className="space-y-6">
@@ -155,9 +195,9 @@ export function AddSoftwareForm() {
                             <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
                                 <div className="flex flex-col items-center justify-center space-y-2">
                                     {
-                                        softwareData.logo_url ? 
-                                        <img src={softwareData.logo_url} alt="Logo" className="w-8 h-8 text-muted-foreground" />
-                                        : <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                                        softwareData.logo_url ?
+                                            <img src={softwareData.logo_url} alt="Logo" className="w-8 h-8 text-muted-foreground" />
+                                            : <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                     }
                                     <div className="text-center">
                                         <p className="text-sm text-muted-foreground">

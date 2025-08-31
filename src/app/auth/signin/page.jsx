@@ -38,6 +38,7 @@ const SignInPage = () => {
 
       if (res.ok) {
         const { token, user } = await res.json();
+        console.log(user);
         setUser(user);
         localStorage.setItem("token", token);
         router.push("/"); 

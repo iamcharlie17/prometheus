@@ -29,7 +29,7 @@ export async function POST(request) {
       expiresIn: 60, // URL expires in 60 seconds
     });
 
-    const fileUrl = `${process.env.S3_ENDPOINT}/${bucketName}/${fileName}`;
+    const fileUrl = `${process.env.S3_ENDPOINT || "http://localhost:9000"}/${bucketName}/${fileName}`;
 
     return NextResponse.json({ signedUrl, fileUrl });
   } catch (error) {

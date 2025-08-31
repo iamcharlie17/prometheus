@@ -4,6 +4,7 @@ import { executeQuery } from "@/lib/database";
 import oracledb from "oracledb";
 
 export async function POST(request) {
+
   try {
     // 1. Authenticate and authorize the user
     const authHeader = request.headers.get("authorization");
@@ -32,10 +33,10 @@ export async function POST(request) {
       );
     }
 
-    const developer_id = decoded.id;
+    const developer_id = decoded.id ;
 
     // 2. Validate the incoming data
-    const { name, description, version, price, download_url, icon_url } =
+    const { name, description, version, price, download_url, icon_url} =
       await request.json();
 
     if (

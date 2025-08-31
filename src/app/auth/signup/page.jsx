@@ -43,9 +43,7 @@ const SignUpPage = () => {
       console.log(res);
       if (res.ok) {
         setSuccess("Account created successfully! Redirecting to sign in...");
-        setTimeout(() => {
-          // router.push("/auth/signin");
-        }, 2000);
+        router.push("/auth/signin");
       } else {
         const { error } = await res.json();
         setError(error || "An unexpected error occurred.");

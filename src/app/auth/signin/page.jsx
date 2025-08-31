@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/providers/AuthProvider";
 
 const SignInPage = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,8 @@ const SignInPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const {setUser} = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,11 +37,11 @@ const SignInPage = () => {
       });
 
       if (res.ok) {
-        const { token } = await res.json();
-        console.log(token);
-        // Store token (e.g., in localStorage) and redirect
+        const { token, user } = await res.json();
+        console.log(user);
+        setUser(user);
         localStorage.setItem("token", token);
-        // router.push("/"); // Redirect to a protected dashboard page
+        router.push("/"); 
       } else {
         const { error } = await res.json();
         setError(error || "An unexpected error occurred.");

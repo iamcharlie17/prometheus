@@ -1,11 +1,11 @@
-import { authStore } from "@/providers/AuthProvider";
+import { useAuth } from "@/providers/AuthProvider";
 
 const useRole = () => {
-    const { user } = authStore();
+    const { user } = useAuth();
 
-    const isAdmin = user?.role === "admin";
-    const isDeveloper = user?.role === "developer";
-    const isUser = user?.role === 'user';
+    const isAdmin = user?.ROLE === "admin";
+    const isDeveloper = user?.ROLE === "developer";
+    const isUser = user?.ROLE === 'user';
 
     return {
         isAdmin,

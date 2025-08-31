@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -13,7 +12,7 @@ import {
     DropdownMenuItem,
 } from "../ui/dropdown-menu";
 import { Bell, Plus, Settings, LogOut, User } from "lucide-react";
-import { authStore } from "@/providers/AuthProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import useRole from "@/hooks/useRole";
 
 const DeveloperMenu = ({ user }) => (
@@ -21,16 +20,16 @@ const DeveloperMenu = ({ user }) => (
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt={user?.name || "Developer"} />
-                    <AvatarFallback>JD</AvatarFallback>
+                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt={user?.NAME || "Developer"} />
+                    <AvatarFallback>{user?.NAME[0]}</AvatarFallback>
                 </Avatar>
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.name || "John Developer"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.email || "john.dev@example.com"}</p>
+                    <p className="text-sm font-medium leading-none">{user?.NAME}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.EMAIL}</p>
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -45,22 +44,22 @@ const DeveloperMenu = ({ user }) => (
             <DropdownMenuSeparator />
             <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                <button onClick={() => { localStorage.removeItem("token");}}>Log out</button>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 );
 
-const DeveloperNavbar = () => (
+const DeveloperNavbar = ({ user }) => (
     <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                     <Link href="/dashboard" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-sm">LK</span>
+                            <span className="text-primary-foreground font-bold text-sm">PT</span>
                         </div>
-                        <span className="font-semibold text-lg">LicenseKey Pro</span>
+                        <span className="font-semibold text-lg">PROMETHEUS</span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6">
@@ -95,7 +94,7 @@ const DeveloperNavbar = () => (
                         <Bell className="w-4 h-4" />
                     </Button>
 
-                    <DeveloperMenu user={{ name: "John Developer", email: "john.dev@example.com" }} />
+                    <DeveloperMenu user={user} />
                 </div>
             </div>
         </div>
@@ -116,7 +115,7 @@ const DefaultNavbar = ({ user }) => (
                 <div className="flex items-center gap-4">
                     {user ? (
                         <>
-                            <Link href="/auth/profile">{user.name}</Link>
+                            <Link href="/auth/profile">{user.NAME}</Link>
                             <Link href="/auth/signout">
                                 <Button>Sign Out</Button>
                             </Link>
@@ -133,10 +132,10 @@ const DefaultNavbar = ({ user }) => (
 );
 
 const Navbar = () => {
-    const { user } = authStore();
+    const { user } = useAuth();
     const { isDeveloper } = useRole();
 
-    return isDeveloper ? <DeveloperNavbar /> : <DefaultNavbar user={user} />;
+    return isDeveloper ? <DeveloperNavbar user={user} /> : <DefaultNavbar user={user} />;
 };
 
 export default Navbar;

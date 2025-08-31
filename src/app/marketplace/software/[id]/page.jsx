@@ -31,13 +31,19 @@ const SoftwareDetailPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/software/${id}`);
+        const res = await fetch(`/api/software/${id}`,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
+        });
         if (!res.ok) {
           throw new Error("Software not found or not available.");
         }
         const data = await res.json();
         console.log(data);
-        setSoftware(data);
+        setSoftware(data.filter(s => s.id === id)[0]);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -47,6 +53,8 @@ const SoftwareDetailPage = () => {
 
     fetchSoftwareDetails();
   }, [id]);
+
+  console.log(software, "fjowhfowf");
 
   if (loading) {
     return (
@@ -70,10 +78,6 @@ const SoftwareDetailPage = () => {
     );
   }
 
-  if (!software) {
-    return null; // Should be handled by the error state
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
@@ -93,27 +97,27 @@ const SoftwareDetailPage = () => {
               <CardHeader className="flex flex-row items-start gap-4">
                 <Image
                   src={
-                    software.ICON_URL || "/placeholder.svg?height=64&width=64"
+                    software?.iconUrl || "/placeholder.svg?height=64&width=64"
                   }
-                  alt={software.NAME}
+                  alt={software?.name}
                   width={64}
                   height={64}
                   className="rounded-lg"
                 />
                 <div>
-                  <CardTitle className="text-3xl">{software.NAME}</CardTitle>
+                  <CardTitle className="text-3xl">{software?.name}</CardTitle>
                   <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4" />
-                      <span>{software.DEVELOPER_NAME}</span>
+                      <span>{software?.name}</span>
                     </div>
-                    <Badge variant="secondary">v{software.VERSION}</Badge>
+                    <Badge variant="secondary">v{software?.version}</Badge>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-base whitespace-pre-wrap">
-                  {software.DESCRIPTION}
+                  {software?.description}
                 </p>
               </CardContent>
             </Card>
@@ -126,7 +130,7 @@ const SoftwareDetailPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">${software.PRICE}</span>
+                  <span className="text-4xl font-bold">${software?.price}</span>
                   <span className="text-muted-foreground">/ year</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -135,7 +139,7 @@ const SoftwareDetailPage = () => {
                 <Button size="lg" className="w-full">
                   Purchase Now
                 </Button>
-                {software.DOWNLOAD_URL && (
+                {software?.download_url && (
                   <Button variant="secondary" className="w-full gap-2">
                     <Download className="w-4 h-4" />
                     Download Now

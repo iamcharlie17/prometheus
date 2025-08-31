@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/auth/get-user", {
+        const res = await fetch("/api/auth/get-user", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("token");
   };
-
 
   return (
     <AuthContext.Provider value={{ user, logout, setUser }}>

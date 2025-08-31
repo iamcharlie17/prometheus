@@ -45,6 +45,10 @@ export async function POST(request) {
     );
 
     return NextResponse.json({ token, user: { ID: user.ID, NAME: user.NAME, EMAIL: user.EMAIL, ROLE: user.ROLE } });
+<<<<<<< HEAD
+=======
+     
+>>>>>>> riyad
   } catch (error) {
     console.error("Signin Error:", error);
     return NextResponse.json(

@@ -35,10 +35,8 @@ const SignInPage = () => {
 
       if (res.ok) {
         const { token } = await res.json();
-        console.log(token);
-        // Store token (e.g., in localStorage) and redirect
         localStorage.setItem("token", token);
-        // router.push("/"); // Redirect to a protected dashboard page
+        router.push("/"); 
       } else {
         const { error } = await res.json();
         setError(error || "An unexpected error occurred.");

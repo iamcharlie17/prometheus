@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -8,19 +10,53 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, DollarSign } from "lucide-react";
-import { mockSoftware } from "@/lib/mock-data";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export function FeaturedSoftware() {
-  const featuredSoftware = mockSoftware.slice(0, 3);
+  const [featuredSoftware, setFeaturedSoftware] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSoftware = async () => {
+      try {
+        const response = await fetch("/api/software");
+        if (!response.ok) {
+          throw new Error("Failed to fetch software");
+        }
+        const data = await response.json();
+        setFeaturedSoftware(data.slice(0, 3)); // Take the first 3 as featured
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSoftware();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Featured Software</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/* Skeleton loaders */}
+          <div className="h-64 bg-muted animate-pulse rounded-lg" />
+          <div className="h-64 bg-muted animate-pulse rounded-lg" />
+          <div className="h-64 bg-muted animate-pulse rounded-lg" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Featured Software</h2>
         <Button variant="outline" size="sm" asChild>
-          <Link href="/marketplace/featured">View All</Link>
+          <Link href="/marketplace">View All</Link>
         </Button>
       </div>
 

@@ -6,6 +6,8 @@ export async function POST(request) {
   try {
     const { email, name, password, role } = await request.json();
 
+    console.log(email);
+
     if (!email || !name || !password) {
       return NextResponse.json(
         { error: "Please provide all required fields" },
@@ -36,7 +38,11 @@ export async function POST(request) {
 
     await executeQuery(insertQuery, [
       name,
-      
+      email,
+      hashedPassword,
+      role,
+    ]);
+
     // 4. Fetch the newly created user to return its details (without the password)
     const newUserResult = await executeQuery(
       `SELECT id, name, email, role FROM users WHERE email = :email`,
@@ -59,4 +65,8 @@ export async function POST(request) {
       { status: 500 },
     );
   }
+}
+
+export const GET = async(req, res) => {
+  return NextResponse.json({ message: "GET request successful" });
 }

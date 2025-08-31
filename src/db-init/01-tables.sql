@@ -76,7 +76,7 @@ CREATE TABLE software (
     id NUMBER PRIMARY KEY,
     developer_id NUMBER NOT NULL,
     name VARCHAR2(255) NOT NULL,
-    description CLOB,
+    description VARCHAR2(4000),
     version VARCHAR2(50) NOT NULL,
     price NUMBER(10, 2) NOT NULL,
     is_active NUMBER(1) DEFAULT 1 NOT NULL,

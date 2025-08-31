@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/providers/AuthProvider";
 
 const SignInPage = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,8 @@ const SignInPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const {setUser} = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +37,8 @@ const SignInPage = () => {
       });
 
       if (res.ok) {
-        const { token } = await res.json();
+        const { token, user } = await res.json();
+        setUser(user);
         localStorage.setItem("token", token);
         router.push("/"); 
       } else {

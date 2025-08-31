@@ -15,13 +15,13 @@ import { Bell, Plus, Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import useRole from "@/hooks/useRole";
 
-const DeveloperMenu = ({user}) => (
+const DeveloperMenu = ({ user }) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                     <AvatarImage src="/placeholder.svg?height=32&width=32" alt={user?.NAME || "Developer"} />
-                    <AvatarFallback>JD</AvatarFallback>
+                    <AvatarFallback>{user?.NAME[0]}</AvatarFallback>
                 </Avatar>
             </Button>
         </DropdownMenuTrigger>
@@ -44,13 +44,13 @@ const DeveloperMenu = ({user}) => (
             <DropdownMenuSeparator />
             <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                <button onClick={() => { localStorage.removeItem("token");}}>Log out</button>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 );
 
-const DeveloperNavbar = ({user}) => (
+const DeveloperNavbar = ({ user }) => (
     <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -94,7 +94,7 @@ const DeveloperNavbar = ({user}) => (
                         <Bell className="w-4 h-4" />
                     </Button>
 
-                    <DeveloperMenu user={user}/>
+                    <DeveloperMenu user={user} />
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@ const Navbar = () => {
     const { user } = useAuth();
     const { isDeveloper } = useRole();
 
-    return isDeveloper ? <DeveloperNavbar user = {user} /> : <DefaultNavbar user={user} />;
+    return isDeveloper ? <DeveloperNavbar user={user} /> : <DefaultNavbar user={user} />;
 };
 
 export default Navbar;

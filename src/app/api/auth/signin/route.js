@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { executeQuery } from "@/lib/database"; // Adjust path
+import { executeQuery } from "@/lib/database"; 
 
 export async function POST(request) {
   try {
@@ -41,10 +41,10 @@ export async function POST(request) {
     const token = jwt.sign(
       { id: user.ID, email: user.EMAIL, role: user.ROLE },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "1d" },
     );
 
-    return NextResponse.json({ token });
+    return NextResponse.json({ token, user: { ID: user.ID, NAME: user.NAME, EMAIL: user.EMAIL, ROLE: user.ROLE } });
   } catch (error) {
     console.error("Signin Error:", error);
     return NextResponse.json(

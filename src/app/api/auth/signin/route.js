@@ -44,7 +44,7 @@ export async function POST(request) {
       { expiresIn: "1D" },
     );
 
-    return NextResponse.json({ token });
+    return NextResponse.json({ USERID: user.ID, token });
   } catch (error) {
     console.error("Signin Error:", error);
     return NextResponse.json(

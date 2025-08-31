@@ -5,13 +5,12 @@ const oracledb = require("oracledb");
 // Load environment variables from .env.local
 require("dotenv").config({ path: path.resolve(process.cwd(), ".env.local") });
 
-console.log(process.env.ORACLE_USER);
 
 // Configure Oracle DB connection
 const dbConfig = {
-  user: process.env.ORACLE_USER,
-  password: process.env.ORACLE_PASSWORD,
-  connectString: `${process.env.ORACLE_HOST}:${process.env.ORACLE_PORT}/${process.env.ORACLE_DATABASE}`,
+  user: process.env.ORACLE_USER || 'system',
+  password: process.env.ORACLE_PASSWORD || 'oracle',
+  connectString: `${process.env.ORACLE_HOST || "localhost"}:${process.env.ORACLE_PORT || 1521}/${process.env.ORACLE_DATABASE || "XEPDB1"}`,
 };
 
 async function run() {

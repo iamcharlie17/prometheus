@@ -8,8 +8,8 @@ export function MarketplaceHeader() {
   return (
     <header className="py-4 px-6 bg-card border-b">
       <div className="container mx-auto flex items-center justify-between">
-        <Link href="/marketplace" className="text-xl font-bold">
-          SoftwareCo
+        <Link href="/" className="text-xl font-bold">
+          Prometheus
         </Link>
 
         <div className="flex-1 max-w-md mx-4">

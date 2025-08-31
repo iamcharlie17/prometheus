@@ -1,29 +1,142 @@
 "use client";
+
 import React from "react";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuItem,
+} from "../ui/dropdown-menu";
+import { Bell, Plus, Settings, LogOut, User } from "lucide-react";
+import { authStore } from "@/providers/AuthProvider";
+import useRole from "@/hooks/useRole";
 
+const DeveloperMenu = ({ user }) => (
+    <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt={user?.name || "Developer"} />
+                    <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || "John Developer"}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email || "john.dev@example.com"}</p>
+                </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
+);
 
-const Navbar = () => {
-
-    return (
-        <header className="border-b bg-card">
-            <div className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+const DeveloperNavbar = () => (
+    <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                    <Link href="/dashboard" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-sm">PT</span>
+                            <span className="text-primary-foreground font-bold text-sm">LK</span>
                         </div>
-                        <span className="font-semibold text-lg">PROMETHEUS</span>
-                    </div>
+                        <span className="font-semibold text-lg">LicenseKey Pro</span>
+                    </Link>
 
-                    <div className="flex items-center gap-4">
-                        <Link href="/auth/signin"><Button>Get Started</Button></Link>
-                    </div>
+                    <nav className="hidden md:flex items-center gap-6">
+                        {[
+                            { href: "/dashboard", label: "Dashboard" },
+                            { href: "/dashboard/software", label: "Software" },
+                            { href: "/dashboard/licenses", label: "Licenses" },
+                            { href: "/dashboard/analytics", label: "Analytics" },
+                            { href: "/dashboard/api-keys", label: "API Keys" },
+                        ].map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <Button asChild variant="ghost" size="sm">
+                        <Link href="/dashboard/add-software">
+                            <Plus className="w-4 h-4" />
+                            Add Software
+                        </Link>
+                    </Button>
+
+
+                    <Button variant="ghost" size="sm">
+                        <Bell className="w-4 h-4" />
+                    </Button>
+
+                    <DeveloperMenu user={{ name: "John Developer", email: "john.dev@example.com" }} />
                 </div>
             </div>
-        </header>
-    );
+        </div>
+    </header>
+);
+
+const DefaultNavbar = ({ user }) => (
+    <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span className="text-primary-foreground font-bold text-sm">PT</span>
+                    </div>
+                    <span className="font-semibold text-lg">PROMETHEUS</span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    {user ? (
+                        <>
+                            <Link href="/auth/profile">{user.name}</Link>
+                            <Link href="/auth/signout">
+                                <Button>Sign Out</Button>
+                            </Link>
+                        </>
+                    ) : (
+                        <Link href="/auth/signin">
+                            <Button>Get Started</Button>
+                        </Link>
+                    )}
+                </div>
+            </div>
+        </div>
+    </header>
+);
+
+const Navbar = () => {
+    const { user } = authStore();
+    const { isDeveloper } = useRole();
+
+    return isDeveloper ? <DeveloperNavbar /> : <DefaultNavbar user={user} />;
 };
 
 export default Navbar;

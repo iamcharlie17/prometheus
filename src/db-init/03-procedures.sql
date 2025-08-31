@@ -8,7 +8,6 @@ CREATE OR REPLACE PROCEDURE register_user (
 BEGIN
   INSERT INTO users (id, name, email, password, role)
   VALUES (users_seq.NEXTVAL, p_name, p_email, p_password, p_role);
-  COMMIT;
 END;
 /
 
@@ -25,7 +24,6 @@ CREATE OR REPLACE PROCEDURE add_software (
 BEGIN
   INSERT INTO software (id, developer_id, name, description, version, price, download_url, icon_url)
   VALUES (software_seq.NEXTVAL, p_developer_id, p_name, p_description, p_version, p_price, p_download_url, p_icon_url);
-  COMMIT;
 END;
 /
 
@@ -39,7 +37,6 @@ CREATE OR REPLACE PROCEDURE create_license_key (
 BEGIN
   INSERT INTO license_keys (id, license_key, software_id, customer_id, status, expires_at)
   VALUES (license_keys_seq.NEXTVAL, p_license_key, p_software_id, p_customer_id, 'inactive', p_expires_at);
-  COMMIT;
 END;
 /
 
@@ -57,11 +54,11 @@ CREATE OR REPLACE PROCEDURE log_purchase (
 BEGIN
   INSERT INTO purchase_audit (id, customer_id, software_id, license_id, amount, currency, status, payment_method, transaction_id)
   VALUES (purchase_audit_seq.NEXTVAL, p_customer_id, p_software_id, p_license_id, p_amount, p_currency, p_status, p_payment_method, p_transaction_id);
-  COMMIT;
 END;
 /
 
 -- Procedure to log a generic audit event
+-- COMMIT has been removed to prevent ORA-04092 error when called from a trigger.
 CREATE OR REPLACE PROCEDURE log_audit_action (
     p_table_name IN VARCHAR2,
     p_record_id IN VARCHAR2,
@@ -73,10 +70,11 @@ CREATE OR REPLACE PROCEDURE log_audit_action (
 BEGIN
     INSERT INTO audit_logs(log_id, table_name, record_id, action, old_data, new_data, changed_by)
     VALUES (audit_logs_seq.NEXTVAL, p_table_name, p_record_id, p_action, p_old_data, p_new_data, p_changed_by);
-    COMMIT;
 END;
 /
 
+-- This procedure handles a complete business transaction.
+-- The final COMMIT should be managed by the calling application, so it is removed here.
 CREATE OR REPLACE PROCEDURE process_purchase (
    p_customer_id    IN NUMBER,
    p_software_id    IN NUMBER,
@@ -92,23 +90,20 @@ CREATE OR REPLACE PROCEDURE process_purchase (
    v_expires_at     TIMESTAMP;
 BEGIN
    -- Step 1: Generate a unique license key
-   -- Format: 'LIC-' + Software ID + '-' + A 16-character random alphanumeric string
    v_license_key := 'LIC-' || p_software_id || '-' || DBMS_RANDOM.STRING('X', 16);
 
    -- Step 2: Determine the expiration date (e.g., 12 months from now)
    v_expires_at := ADD_MONTHS(CURRENT_TIMESTAMP, 12);
 
    -- Step 3 & 4: Insert the new license and get its ID back
-   -- The license is created as 'active' immediately since the purchase is being processed now.
    INSERT INTO license_keys (
        id, license_key, software_id, customer_id, status, activated_at, expires_at
    ) VALUES (
        license_keys_seq.NEXTVAL, v_license_key, p_software_id, p_customer_id, 'active', CURRENT_TIMESTAMP, v_expires_at
    )
-   RETURNING id INTO v_new_license_id; -- This is a key step!
+   RETURNING id INTO v_new_license_id;
 
    -- Step 5: Log the transaction in the purchase audit table
-   -- Note: We now use the v_new_license_id we just retrieved
    INSERT INTO purchase_audit (
        id, customer_id, software_id, license_id, amount, currency, status, payment_method, transaction_id
    ) VALUES (
@@ -118,9 +113,7 @@ BEGIN
    -- Set the OUT parameter so the application can get the key
    p_generated_key := v_license_key;
 
-   -- Step 6: Commit the transaction
-   -- Both inserts are now saved permanently.
-   COMMIT;
+   -- Step 6: COMMIT is removed. The application will handle it.
 
 EXCEPTION
    WHEN OTHERS THEN

@@ -1,5 +1,3 @@
-// src/app/api/software/[softwareId]/purchase/route.js
-
 import { NextResponse } from "next/server";
 import { executeQuery } from "@/lib/database";
 import { verifyTokenAndGetPayload } from "@/lib/auth-utils";
@@ -24,12 +22,35 @@ export async function POST(request, { params }) {
     }
     const price = softwareResult.rows[0].PRICE;
 
-    // 2. In a real app, you would process payment here with Stripe, PayPal, etc.
+    // 2. NEW: Check if the user already has an active license for this software
+    const licenseCheckQuery = `
+      SELECT 1 FROM license_keys
+      WHERE customer_id = :customerId
+      AND software_id = :softwareId
+      AND status = 'active'
+      AND expires_at > CURRENT_TIMESTAMP
+    `;
+    const existingLicenseResult = await executeQuery(licenseCheckQuery, [
+      customerId,
+      softwareId,
+    ]);
+
+    if (existingLicenseResult.rows.length > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "You already have an active license for this software. You cannot purchase it again at this time.",
+        },
+        { status: 409 }, // 409 Conflict is the appropriate HTTP status code
+      );
+    }
+
+    // 3. In a real app, you would process payment here with Stripe, PayPal, etc.
     // For now, we simulate a successful payment.
     const paymentMethod = "Simulated Card";
     const transactionId = `TRANS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // 3. Call the stored procedure to create the license and log the purchase
+    // 4. Call the stored procedure to create the license and log the purchase
     const procedureCall = `
       BEGIN
         process_purchase(

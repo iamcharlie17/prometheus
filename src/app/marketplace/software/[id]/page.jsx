@@ -1,158 +1,87 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { DollarSign, User, ArrowLeft, Download } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
+import { notFound, useParams } from "next/navigation";
+import { SoftwareHeader } from "@/components/marketplace/software-header";
+import { SoftwareDetails } from "@/components/marketplace/software-details";
+import { SoftwarePurchase } from "@/components/marketplace/software-purchase";
+import { SoftwareReviews } from "@/components/marketplace/software-reviews";
+import { mockSoftware } from "@/lib/mock-data";
 
-const SoftwareDetailPage = () => {
-  const [software, setSoftware] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+import { useEffect, use, useState } from "react";
+
+function SoftwarePage() {
   const params = useParams();
-  const { id } = params;
+  const id = params.id;
+
+  const [software, setSoftware] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
-
-    const fetchSoftwareDetails = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchData = async () => {
       try {
-        const res = await fetch(`/api/software/${id}`,{
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`/api/software/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
+            authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        if (!res.ok) {
-          throw new Error("Software not found or not available.");
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
-        const data = await res.json();
-        console.log(data);
-        setSoftware(data.filter(s => s.id === id)[0]);
-      } catch (err) {
-        setError(err.message);
+
+        const data = await response.json();
+        setSoftware(data[0] || data);
+        // Handle the data here
+        software = data[0];
+      } catch (error) {
+        console.error("Error fetching data:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    fetchSoftwareDetails();
+    fetchData();
   }, [id]);
 
-  console.log(software, "fjowhfowf");
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-muted-foreground">Loading software details...</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading software details...</p>
+        </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-bold text-destructive mb-4">
-          An Error Occurred
-        </h2>
-        <p className="text-muted-foreground mb-6">{error}</p>
-        <Button asChild>
-          <Link href="/marketplace">Back to Marketplace</Link>
-        </Button>
-      </div>
-    );
+  console.log(software);
+  if (!software || error) {
+    notFound();
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="mb-6">
-          <Button variant="outline" asChild className="gap-2">
-            <Link href="/marketplace">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Marketplace
-            </Link>
-          </Button>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Main Details Section */}
-          <div className="md:col-span-2">
-            <Card>
-              <CardHeader className="flex flex-row items-start gap-4">
-                <Image
-                  src={
-                    software?.iconUrl || "/placeholder.svg?height=64&width=64"
-                  }
-                  alt={software?.name}
-                  width={64}
-                  height={64}
-                  className="rounded-lg"
-                />
-                <div>
-                  <CardTitle className="text-3xl">{software?.name}</CardTitle>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      <span>{software?.name}</span>
-                    </div>
-                    <Badge variant="secondary">v{software?.version}</Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-base whitespace-pre-wrap">
-                  {software?.description}
-                </p>
-              </CardContent>
-            </Card>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <SoftwareHeader software={software} />
+
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-8">
+            <SoftwareDetails software={software} />
+            {/* <SoftwareReviews />*/}
           </div>
-          {/* Purchase Section */}
-          <div className="md:col-span-1">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle>Purchase License</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">${software?.price}</span>
-                  <span className="text-muted-foreground">/ year</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Includes updates and standard support.
-                </p>
-                <Button size="lg" className="w-full">
-                  Purchase Now
-                </Button>
-                {software?.download_url && (
-                  <Button variant="secondary" className="w-full gap-2">
-                    <Download className="w-4 h-4" />
-                    Download Now
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+
+          <div>
+            <SoftwarePurchase software={software} />
           </div>
         </div>
-      </main>
-      <Footer />
+      </div>
     </div>
   );
-};
-
-export default SoftwareDetailPage;
+}
+export default SoftwarePage;

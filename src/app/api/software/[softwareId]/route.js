@@ -2,15 +2,16 @@
 import { NextResponse } from "next/server";
 import { executeQuery } from "@/lib/database";
 
-export async function GET(request) {
+export async function GET(request, { params }) {
   try {
     const { searchParams } = new URL(request.url);
     const searchQuery = searchParams.get("search");
+    const { softwareId } = params;
 
-    let query = `SELECT id, name, description, version, price, icon_url
+    let query = `SELECT id, name, description, version, price, icon_url, is_active
                    FROM software
-                   WHERE is_active = 1`;
-    const binds = {};
+                   WHERE id=:id`;
+    const binds = [softwareId];
 
     if (searchQuery) {
       query += ` AND (LOWER(name) LIKE :searchQuery OR LOWER(description) LIKE :searchQuery)`;
@@ -26,6 +27,7 @@ export async function GET(request) {
       version: row.VERSION,
       price: row.PRICE,
       iconUrl: row.ICON_URL,
+      isActive: row.IS_ACTIVE === 1,
     }));
 
     return NextResponse.json(formattedRows);

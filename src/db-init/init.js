@@ -5,6 +5,8 @@ const oracledb = require("oracledb");
 // Load environment variables from .env.local
 require("dotenv").config({ path: path.resolve(process.cwd(), ".env.local") });
 
+console.log(process.env.ORACLE_USER);
+
 // Configure Oracle DB connection
 const dbConfig = {
   user: process.env.ORACLE_USER,

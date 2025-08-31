@@ -13,7 +13,7 @@ import { Upload, ArrowLeft, ArrowRight, Check, ImageIcon } from "lucide-react";
 export function AddSoftwareForm() {
     const [currentStep, setCurrentStep] = useState(1);
     const [softwareData, setSoftwareData] = useState({
-        title: "",
+        name: "",
         version: "",
         description: "",
         logo: null,
@@ -45,12 +45,12 @@ export function AddSoftwareForm() {
     const handleSubmit = () => {
         console.log("Submitting software data:", softwareData);
         alert({
-            title: "Software Added Successfully",
+            name: "Software Added Successfully",
             description: "Your software has been added to the system.",
         });
         // Reset form or redirect
         setSoftwareData({
-            title: "",
+            name: "",
             version: "",
             description: "",
             logo: null,
@@ -62,7 +62,7 @@ export function AddSoftwareForm() {
         setCurrentStep(1);
     };
 
-    const isStep1Valid = softwareData.title && softwareData.description && softwareData.price;
+    const isStep1Valid = softwareData.name && softwareData.description && softwareData.price;
     const isStep2Valid = softwareData.route && softwareData.documentation;
     const isStep3Valid = softwareData.executable;
 
@@ -92,12 +92,12 @@ export function AddSoftwareForm() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="title">Software Title</Label>
+                            <Label htmlFor="name">Software Name</Label>
                             <Input
-                                id="title"
-                                placeholder="Enter software title"
-                                value={softwareData.title}
-                                onChange={(e) => setSoftwareData((prev) => ({ ...prev, title: e.target.value }))}
+                                id="name"
+                                placeholder="Enter software name"
+                                value={softwareData.name}
+                                onChange={(e) => setSoftwareData((prev) => ({ ...prev, name: e.target.value }))}
                             />
                         </div>
 
@@ -108,17 +108,6 @@ export function AddSoftwareForm() {
                                 placeholder="Enter software version"
                                 value={softwareData.version}
                                 onChange={(e) => setSoftwareData((prev) => ({ ...prev, version: e.target.value }))}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                placeholder="Describe your software and its features"
-                                rows={4}
-                                value={softwareData.description}
-                                onChange={(e) => setSoftwareData((prev) => ({ ...prev, description: e.target.value }))}
                             />
                         </div>
 
@@ -285,7 +274,7 @@ export function AddSoftwareForm() {
                             <h4 className="font-medium">Summary</h4>
                             <div className="text-sm space-y-1">
                                 <p>
-                                    <span className="font-medium">Title:</span> {softwareData.title}
+                                    <span className="font-medium">Name:</span> {softwareData.name}
                                 </p>
                                 <p>
                                     <span className="font-medium">Price:</span> ${softwareData.price}

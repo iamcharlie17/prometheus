@@ -15,7 +15,8 @@ import { Bell, Plus, Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import useRole from "@/hooks/useRole";
 
-const DeveloperMenu = ({ user }) => (
+
+const DeveloperMenu = ({ user, setUser }) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -32,7 +33,7 @@ const DeveloperMenu = ({ user }) => (
                     <p className="text-xs leading-none text-muted-foreground">{user?.EMAIL}</p>
                 </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
@@ -41,16 +42,19 @@ const DeveloperMenu = ({ user }) => (
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
-                <button onClick={() => { localStorage.removeItem("token");}}>Log out</button>
+                <button onClick={() => (
+                    localStorage.removeItem("token"),
+                    setUser(null),
+                )}>Log out</button>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 );
 
-const DeveloperNavbar = ({ user }) => (
+const DeveloperNavbar = ({ user, setUser }) => (
     <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -90,18 +94,18 @@ const DeveloperNavbar = ({ user }) => (
                     </Button>
 
 
-                    <Button variant="ghost" size="sm">
+                    {/* <Button variant="ghost" size="sm">
                         <Bell className="w-4 h-4" />
-                    </Button>
+                    </Button> */}
 
-                    <DeveloperMenu user={user} />
+                    <DeveloperMenu user={user} setUser={setUser} />
                 </div>
             </div>
         </div>
     </header>
 );
 
-const DefaultNavbar = ({ user }) => (
+const DefaultNavbar = ({ user, setUser }) => (
     <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -132,10 +136,10 @@ const DefaultNavbar = ({ user }) => (
 );
 
 const Navbar = () => {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const { isDeveloper } = useRole();
 
-    return isDeveloper ? <DeveloperNavbar user={user} /> : <DefaultNavbar user={user} />;
+    return isDeveloper ? <DeveloperNavbar user={user} setUser={setUser} /> : <DefaultNavbar user={user} setUser={setUser} />;
 };
 
 export default Navbar;

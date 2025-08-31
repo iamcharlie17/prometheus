@@ -15,10 +15,10 @@ export function CheckoutHeader({ step }) {
           <Link href="/marketplace" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">
-                LK
+                PT
               </span>
             </div>
-            <span className="font-semibold text-lg">LicenseKey Pro</span>
+            <span className="font-semibold text-lg">PROMETHEUS</span>
           </Link>
 
           <div className="flex items-center gap-4">

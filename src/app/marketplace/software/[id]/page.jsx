@@ -37,8 +37,6 @@ function SoftwarePage() {
 
         const data = await response.json();
         setSoftware(data[0] || data);
-        // Handle the data here
-        software = data[0];
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

@@ -12,7 +12,11 @@ export function LicenseInfo({ licenseInfo }) {
     });
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    console.log(licenseInfo);
+    const response = await fetch(
+      `/api/software/${licenseInfo.software_id}/download`,
+    );
     if (licenseInfo.DOWNLOAD_URL) {
       window.open(licenseInfo.DOWNLOAD_URL, "_blank");
     } else {

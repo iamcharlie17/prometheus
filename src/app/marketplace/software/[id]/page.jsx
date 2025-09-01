@@ -62,7 +62,7 @@ function SoftwarePage() {
 
         if (response.ok) {
           const data = await response.json();
-          setLicenseInfo(data[0]);
+          setLicenseInfo({ ...data[0], software_id: id });
           console.log("LicenseInfo", data);
         }
       } catch (error) {

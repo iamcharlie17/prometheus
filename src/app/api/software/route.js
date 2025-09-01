@@ -4,7 +4,7 @@ import { executeQuery } from "@/lib/database";
 
 export async function GET() {
   try {
-    const query = `SELECT id, name, description, version, price, icon_url, developer_id, download_url
+    const query = `SELECT id, name, description, version, price, icon_url, developer_id, download_url, downloads
                    FROM software
                    WHERE is_active = 1`;
     const result = await executeQuery(query);

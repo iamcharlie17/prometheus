@@ -82,6 +82,7 @@ CREATE TABLE software (
     is_active NUMBER(1) DEFAULT 1 NOT NULL,
     download_url VARCHAR2(2048),
     icon_url VARCHAR2(2048),
+    downloads NUMBER DEFAULT 0 NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_developer FOREIGN KEY (developer_id) REFERENCES users(id),

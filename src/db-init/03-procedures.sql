@@ -123,3 +123,14 @@ EXCEPTION
       RAISE;
 END process_purchase;
 /
+
+-- Procedure to increment the download count for a software
+CREATE OR REPLACE PROCEDURE increment_download_count (
+   p_software_id IN NUMBER
+) AS
+BEGIN
+  UPDATE software
+  SET downloads = downloads + 1
+  WHERE id = p_software_id;
+END;
+/

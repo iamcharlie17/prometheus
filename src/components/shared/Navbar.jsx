@@ -117,37 +117,47 @@ const DeveloperNavbar = ({ user, setUser }) => (
   </header>
 );
 
-const DefaultNavbar = ({ user, setUser }) => (
-  <header className="border-b bg-card">
-    <div className="container mx-auto px-4 py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">
-              PT
-            </span>
-          </div>
-          <span className="font-semibold text-lg">PROMETHEUS</span>
-        </div>
+const DefaultNavbar = ({ user, setUser }) => {
+  const router = useRouter(); // Initialize router
 
-        <div className="flex items-center gap-4">
-          {user ? (
-            <>
-              <Link href="/auth/profile">{user.NAME}</Link>
-              <Link href="/auth/signout">
-                <Button>Sign Out</Button>
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    router.push("/"); // Redirect to homepage using Next.js router
+  };
+
+  return (
+    <header className="border-b bg-card">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">
+                PT
+              </span>
+            </div>
+            <span className="font-semibold text-lg">PROMETHEUS</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <Link href="/auth/profile">{user.NAME}</Link>
+                <Link href="/auth/signout">
+                  <Button onClick={handleLogout}>Sign Out</Button>
+                </Link>
+              </>
+            ) : (
+              <Link href="/auth/signin">
+                <Button>Get Started</Button>
               </Link>
-            </>
-          ) : (
-            <Link href="/auth/signin">
-              <Button>Get Started</Button>
-            </Link>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-);
+    </header>
+  );
+};
 
 const Navbar = () => {
   const { user, setUser } = useAuth();

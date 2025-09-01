@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,6 +18,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import Link from "next/link";
+import router from "next/navigation";
 
 export function UserDashboardHeader() {
   return (
@@ -27,10 +29,12 @@ export function UserDashboardHeader() {
             <Link href="/user-dashboard" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">
-                  LK
+                  PT
                 </span>
               </div>
-              <span className="font-semibold text-lg">LicenseKey Pro</span>
+              <Link className="font-semibold text-lg" href="/">
+                PROMETHEUS
+              </Link>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">

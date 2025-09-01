@@ -101,10 +101,10 @@ export function SoftwareGrid() {
                   <DollarSign className="w-4 h-4 text-muted-foreground" />
                   <span className="text-xl font-bold">${software.PRICE}</span>
                 </div>
-                {/* <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Download className="w-3 h-3" />
                   <span>1.2k</span>
-                </div> */}
+                </div>
               </div>
 
               <div className="flex gap-2">

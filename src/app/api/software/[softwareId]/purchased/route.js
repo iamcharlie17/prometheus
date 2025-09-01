@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { executeQuery } from "@/lib/database";
 import { verifyTokenAndGetPayload } from "@/lib/auth-utils";
 
-export async function GET(request) {
+export async function GET(request, { params }) {
   try {
-    const decoded = verifyTokenAndGetPayload(request);
+    const decoded = verifyTokenAndGetPayload(request, "user");
     const customerId = decoded.id;
+    const { softwareId } = params;
 
     const query = `
-      SELECT l.id, l.license_key, l.status, l.expires_at, s.name as software_name
+      SELECT l.id, l.license_key, l.status, l.expires_at, s.name as software_name, s.download_url
       FROM license_keys l
       JOIN software s ON l.software_id = s.id
-      WHERE l.customer_id = :id
+      WHERE l.customer_id = :id AND l.software_id = :softwareId
       ORDER BY l.created_at DESC
     `;
-    const result = await executeQuery(query, [customerId]);
+    const result = await executeQuery(query, [customerId, softwareId]);
     return NextResponse.json(result.rows);
   } catch (error) {
     if (error instanceof NextResponse) return error;

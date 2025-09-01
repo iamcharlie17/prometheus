@@ -51,9 +51,9 @@ export function SoftwareHeader({ software }) {
           <div className="text-2xl font-bold text-primary">
             ${software.price}
           </div>
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
+          {/* <Button size="lg" className="bg-primary hover:bg-primary/90">
             Purchase License
-          </Button>
+          </Button>*/}
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ export function SoftwareGrid() {
         }
         const data = await response.json();
         setSoftwareList(data);
+        console.log(data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -103,7 +104,7 @@ export function SoftwareGrid() {
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Download className="w-3 h-3" />
-                  <span>{software.DOWNLOAD}</span>
+                  <span>{software.DOWNLOADS}</span>
                 </div>
               </div>
 

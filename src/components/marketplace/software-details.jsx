@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 export function SoftwareDetails({ software }) {
+  console.log(software);
   return (
     <div className="space-y-6">
       {/* Description */}

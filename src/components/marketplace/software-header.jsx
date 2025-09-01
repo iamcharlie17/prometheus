@@ -35,7 +35,7 @@ export function SoftwareHeader({ software }) {
             {software.description}
           </p>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          {/* <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               <span>4.8 (124 reviews)</span>
@@ -44,7 +44,7 @@ export function SoftwareHeader({ software }) {
               <Download className="w-4 h-4" />
               <span>2.3k downloads</span>
             </div>
-          </div>
+          </div>*/}
         </div>
 
         <div className="flex items-center gap-4">

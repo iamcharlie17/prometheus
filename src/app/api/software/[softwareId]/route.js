@@ -8,7 +8,7 @@ export async function GET(request, { params }) {
     const searchQuery = searchParams.get("search");
     const { softwareId } = params;
 
-    let query = `SELECT id, name, description, version, price, icon_url, is_active
+    let query = `SELECT id, name, description, version, price, icon_url, is_active, downloads
                    FROM software
                    WHERE id=:id`;
     const binds = [softwareId];
@@ -28,6 +28,7 @@ export async function GET(request, { params }) {
       price: row.PRICE,
       iconUrl: row.ICON_URL,
       isActive: row.IS_ACTIVE === 1,
+      downloads: row.DOWNLOADS,
     }));
 
     return NextResponse.json(formattedRows);

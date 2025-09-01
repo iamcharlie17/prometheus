@@ -8,7 +8,7 @@ export async function GET(request) {
     const customerId = decoded.id;
 
     const query = `
-      SELECT l.id, l.license_key, l.status, l.expires_at, s.name as software_name
+      SELECT l.id, l.license_key, l.status, l.expires_at, s.name as software_name, s.version, s.icon_url, s.download_url, l.created_at
       FROM license_keys l
       JOIN software s ON l.software_id = s.id
       WHERE l.customer_id = :id

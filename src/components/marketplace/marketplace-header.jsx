@@ -1,10 +1,17 @@
-// src/components/marketplace/marketplace-header.jsx
+"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Search, ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function MarketplaceHeader() {
+  const router = useRouter();
+
+  const handleAccountClick = () => {
+    router.push("/user-dashboard");
+  };
+
   return (
     <header className="py-4 px-6 bg-card border-b">
       <div className="container mx-auto flex items-center justify-between">
@@ -24,7 +31,7 @@ export function MarketplaceHeader() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm">
+          <Button onClick={handleAccountClick} size="sm">
             My Account
           </Button>
           <Button variant="outline" size="icon">
